@@ -1,0 +1,67 @@
+{
+	"http": {
+		"routers": {
+			"hub": {
+                "entryPoints": [
+                    "http"
+                ],
+				"rule": "PathPrefix(`/proxy/hub/`)",
+				"service": "hub",
+                "middlewares": [
+                    "hub-prefix",
+                    "hub-redirect",
+                    "hub-href",
+                    "gateway-auth"
+                ]
+			}
+		},
+        "middlewares": {
+            "hub-prefix": {
+                "replacePathRegex": {
+                    "regex": "^/proxy/[a-zA-Z0-9_]*/(.*)",
+                    "replacement": "/api/galaxy/$1"
+                }
+            },
+            "hub-redirect": {
+                "plugin": {
+                    "redirectLocation": {
+                        "default": false,
+                        "rewrites": {
+                            "regex": "/api/galaxy/",
+                            "replacement": "/proxy/hub/api/galaxy/"
+                        }
+                    }
+                }
+            },
+            "hub-href": {
+                "plugin": {
+                    "rewriteBody": {
+                        "lastModified": false,
+                        "rewrites": {
+                            "regex": "/api/galaxy/",
+                            "replacement": "/proxy/hub/api/galaxy/"
+                        }
+                    }
+                }
+            },
+            "gateway-auth": {
+                "plugin":{
+                    "aapAuth": {
+                        "gatewayAPI": "http://localhost:7080"
+                    }
+                }
+            }
+            
+        },
+		"services": {
+			"hub": {
+				"loadBalancer": {
+					"servers": [{
+						"url": "http://localhost:8080"
+					}],
+                    "passHostHeader": true
+				}
+			}
+		}
+	}
+}

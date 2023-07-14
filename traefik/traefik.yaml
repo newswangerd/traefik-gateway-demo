@@ -1,0 +1,26 @@
+log:
+  level: DEBUG
+api:
+  dashboard: true
+  debug: true
+  insecure: true
+
+entryPoints:
+  http:
+    address: ":80"
+
+providers:
+  http:
+    endpoint: "http://localhost:7080/api/proxy-config"
+
+experimental:
+  plugins:
+    redirectLocation:
+      moduleName: "github.com/SchmitzDan/traefik-plugin-redirect-location"
+      version: "v0.0.2" 
+    rewriteBody:
+      moduleName: "github.com/traefik/plugin-rewritebody"
+      version: "v0.3.1"
+  localPlugins:
+    aapAuth:
+      moduleName: github.com/traefik/plugindemo

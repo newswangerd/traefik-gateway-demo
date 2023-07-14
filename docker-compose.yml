@@ -1,0 +1,31 @@
+version: '3'
+
+services:
+  gateway-proxy:
+    # The official v2 Traefik docker image
+    depends_on:
+      - gateway-api
+
+    image: traefik:v2.10
+    # Enables the web UI and tells Traefik to listen to docker
+    extra_hosts:
+      localhost: "host-gateway"
+    ports:
+      # The HTTP port
+      - "9080:80"
+      # The Web UI (enabled by --api.insecure=true)
+      - "9090:8080"
+    command: --configFile=/config/traefik.yaml
+    volumes:
+      - "./traefik:/config"
+      - "./plugins-local:/plugins-local"
+  gateway-api:
+    image: httpd:alpine
+    volumes:
+      - "./api/:/usr/local/apache2/htdocs/"
+    ports:
+      - "7080:80"
+  galaxy:
+    image: newswangerd/galaxy_ng_demo
+    ports:
+      - "8080:80"
