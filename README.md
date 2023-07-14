@@ -25,24 +25,17 @@ The AAP authentication middleware is the most interesting part of this. It's a c
 
 To run the demo:
 
-```
+```bash 
 # Start the demo
 docker-compose up -d
 
 # Wait about a minute for galaxy to start up
 # Create the admin user
 # NOTE: For the demo to work, the username/password MUST be admin:admin
-
-dnewswan-mac:traefik-gateway-demo dnewswan$ docker-compose exec galaxy pulpcore-manager createsuperuser
+docker-compose exec galaxy pulpcore-manager createsuperuser
 Username: admin
 Email address: a@a.com
 Password: admin
-Password (again): admin
-The password is too similar to the username.
-This password is too short. It must contain at least 9 characters.
-This password is too common.
-Bypass password validation and create user anyway? [y/N]: y
-Superuser created successfully.
 
 # Navigate to the `/proxy/hub/` path on the proxy.
 curl http://localhost:9080/proxy/hub/ | jq
